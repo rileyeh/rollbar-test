@@ -29,7 +29,7 @@
 
         addForm.addEventListener('submit', (e) => {
             e.preventDefault()
-            axios.post('http://localhost:5555/api/student', {name: nameInput.value})
+            axios.post('/api/student', {name: nameInput.value})
                 .then(({data}) => {
                     container.innerHTML = ''
                     nameInput.value = ''
