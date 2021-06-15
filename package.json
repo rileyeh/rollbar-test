@@ -10,9 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/jest": "^26.0.23",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jest": "^27.0.4",
     "rollbar": "^2.22.0"
   }
 }
