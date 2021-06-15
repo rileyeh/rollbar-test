@@ -1,5 +1,6 @@
 const express = require('express')
 const path = require('path')
+const cors = require('cors')
 let Rollbar = require('rollbar')
 let rollbar = new Rollbar({
     accessToken: '92e8deb0bbd94fc99faf5813faa695bb',
@@ -8,33 +9,33 @@ let rollbar = new Rollbar({
   })
 const app = express()
 
+app.use(cors())
+app.use(express.json())
 app.use('/styles', express.static(path.join(__dirname, '/public/styles.css')))
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
 })
 
-let waterObj = {
-    monday: 0, 
-    tuesday: 0,
-    wednesday: 0,
-    thursday: 0,
-    friday: 0,
-    saturday: 0,
-    sunday: 0
-}
+let students = []
 
-app.post('/api/water', (req, res) => {
-    const {selectedDay, waterAmount} = req.body
-    selectedDay = selectedDay.toLowerCase()
-    if (waterObj[selectedDay] === 0) {
-        waterObj[selectedDay] = +waterAmount
+app.post('/api/student', (req, res) => {
+    let {name} = req.body
+    const index = students.findIndex(stu => stu === name)
+    if (index === -1) {
+        students.push(name)
+        rollbar.log('student successfully added')
+        res.status(200).send(students)
     } else {
-        rollbar.log('no can do')
+        let errMsg = 'student already exists'
+        rollbar.error(errMsg)
+        res.status(400).send(errMsg)
     }
 })
 
 const port = process.env.PORT || 5555
+
+app.use(rollbar.errorHandler())
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)

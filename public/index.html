@@ -5,34 +5,52 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="/favicon.ico">
-    <title>Water Tracker</title>
+    <title>Student List</title>
     <link rel="stylesheet" href="/styles">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
-    <h1>Water Tracker</h1>
+    <h1>Student List</h1>
     <form id="add-form">
-        <select>
-            <option>Monday</option>
-            <option>Tuesday</option>
-            <option>Wednesday</option>
-            <option>Thursday</option>
-            <option>Friday</option>
-            <option>Saturday</option>
-            <option>Sunday</option>
-        </select>
-        <input type='number' />
-        <button>add water</button>
+        <input type='text' placeholder="student name here"/>
+        <button>add student</button>
     </form>
     <section></section>
 
     <script>
         const addForm = document.querySelector('#add-form')
-        const selectedDay = document.querySelector('select').value
-        const waterAmount = document.querySelector('input[type=number]').value
-        addForm.addEventListener('submit', () => {
-            axios.post('/api/water', {selectedDay, waterAmount})
-                .then(res => console.log(res))
+        const nameInput = document.querySelector('input')
+        const container = document.querySelector('section')
+
+        function close(e) {
+            e.target.parentNode.remove()
+        }
+
+
+        addForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+            axios.post('http://localhost:5555/api/student', {name: nameInput.value})
+                .then(({data}) => {
+                    container.innerHTML = ''
+                    nameInput.value = ''
+                    data.forEach(name => {
+                        const nameDisplay = document.createElement('p')
+                        nameDisplay.textContent = name
+                        container.appendChild(nameDisplay)
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    console.log(err.response.data)
+
+                    const notif = document.createElement('aside')
+                    notif.innerHTML = `<p>${err.response.data}</p>
+                    <button class="close">close</button>`
+                    document.body.appendChild(notif)
+
+                    const closeBtns = document.querySelectorAll('.close')
+                    closeBtns.forEach(btn => btn.addEventListener('click', close))
+                })
         })
     </script>
 </body>
