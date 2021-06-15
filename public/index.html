@@ -26,22 +26,20 @@
             e.target.parentNode.remove()
         }
 
-
         addForm.addEventListener('submit', (e) => {
             e.preventDefault()
             axios.post('/api/student', {name: nameInput.value})
                 .then(({data}) => {
                     container.innerHTML = ''
                     nameInput.value = ''
-                    data.forEach(name => {
-                        const nameDisplay = document.createElement('p')
-                        nameDisplay.textContent = name
-                        container.appendChild(nameDisplay)
+
+                    data.forEach((name, i) => {
+                        container.innerHTML += `<p>${i+1}: ${name}</p>`
                     })
                 })
                 .catch(err => {
-                    console.log(err)
-                    console.log(err.response.data)
+                    console.log(err.response)
+                    nameInput.value = ''
 
                     const notif = document.createElement('aside')
                     notif.innerHTML = `<p>${err.response.data}</p>
