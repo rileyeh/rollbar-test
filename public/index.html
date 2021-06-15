@@ -7,9 +7,33 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <title>Water Tracker</title>
     <link rel="stylesheet" href="/styles">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
     <h1>Water Tracker</h1>
+    <form id="add-form">
+        <select>
+            <option>Monday</option>
+            <option>Tuesday</option>
+            <option>Wednesday</option>
+            <option>Thursday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+            <option>Sunday</option>
+        </select>
+        <input type='number' />
+        <button>add water</button>
+    </form>
+    <section></section>
 
+    <script>
+        const addForm = document.querySelector('#add-form')
+        const selectedDay = document.querySelector('select').value
+        const waterAmount = document.querySelector('input[type=number]').value
+        addForm.addEventListener('submit', () => {
+            axios.post('/api/water', {selectedDay, waterAmount})
+                .then(res => console.log(res))
+        })
+    </script>
 </body>
 </html>
